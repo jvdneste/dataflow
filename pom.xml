@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<organization>
-		<name>Be Functional</name>
+		<name>functional</name>
 		<url>http://www.functional.be</url>
 	</organization>
 
@@ -17,7 +17,6 @@
 
 	<modules>
 		<module>be.functional.util</module>
-		<module>be.functional.util.demo</module>
 	</modules>
 
 	<build>
@@ -110,10 +109,6 @@
 		</plugins>
 	</reporting>
 
-	<!-- <scm> <connection>scm:git:http://herdesvn01.he.agfa.be/svn/repos/jris/jris/trunk</connection>
-		<developerConnection>scm:svn:http://herdesvn01.he.agfa.be/svn/repos/jris/jris/trunk</developerConnection>
-		<url>http://herdesvn01.he.agfa.be/svn/repos/jris/jris/trunk</url> </scm> -->
-
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -149,11 +144,6 @@
 				<groupId>be.functional</groupId>
 				<artifactId>be.functional.util</artifactId>
 				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>be.functional</groupId>
-				<artifactId>be.functional.util.demo</artifactId>
-				<version>${project.version}</version>
 				<!-- <classifier>tests</classifier> -->
 				<!-- <scope>test</scope> -->
 			</dependency>
@@ -162,7 +152,7 @@
 				<artifactId>guava</artifactId>
 				<version>16.0</version>
 			</dependency>
-			<dependency>
+				<dependency>
 				<groupId>com.jgoodies</groupId>
 				<artifactId>forms</artifactId>
 				<version>1.2.1</version>
