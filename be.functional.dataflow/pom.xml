@@ -9,9 +9,9 @@
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 
-	<name>Be Functional Util</name>
-	<artifactId>be.functional.util</artifactId>
-	<description>Basic stuff</description>
+	<name>Dataflow</name>
+	<artifactId>be.functional.dataflow</artifactId>
+	<description>A dataflow library</description>
 
 	<dependencies>
 		<dependency>

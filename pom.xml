@@ -16,7 +16,7 @@
 	<packaging>pom</packaging>
 
 	<modules>
-		<module>be.functional.util</module>
+		<module>be.functional.dataflow</module>
 	</modules>
 
 	<build>
