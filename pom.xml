@@ -68,11 +68,6 @@
 					<version>2.2.1</version>
 				</plugin>
 				<plugin>
-					<groupId>com.agfa.maven.plugins</groupId>
-					<artifactId>maven-zip-plugin</artifactId>
-					<version>0.0.4</version>
-				</plugin>
-				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-surefire-plugin</artifactId>
 					<version>2.4.3</version>
@@ -131,27 +126,15 @@
 				<scope>test</scope>
 			</dependency>
 			<dependency>
-				<groupId>junit</groupId>
-				<artifactId>junit</artifactId>
-				<scope>test</scope>
-			</dependency>
-			<dependency>
 				<groupId>log4j</groupId>
 				<artifactId>log4j</artifactId>
 				<version>1.2.14</version>
 				<scope>provided</scope>
 			</dependency>
 			<dependency>
-				<groupId>be.functional</groupId>
-				<artifactId>be.functional.util</artifactId>
-				<version>${project.version}</version>
-				<!-- <classifier>tests</classifier> -->
-				<!-- <scope>test</scope> -->
-			</dependency>
-			<dependency>
 				<groupId>com.google.guava</groupId>
 				<artifactId>guava</artifactId>
-				<version>16.0</version>
+				<version>18.0</version>
 			</dependency>
 				<dependency>
 				<groupId>com.jgoodies</groupId>
