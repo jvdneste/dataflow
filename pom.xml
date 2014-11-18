@@ -17,6 +17,7 @@
 
 	<modules>
 		<module>be.functional.dataflow</module>
+		<module>be.functional.dataflow.processor</module>
 	</modules>
 
 	<build>
@@ -166,6 +167,11 @@
 				<groupId>com.google.code.findbugs</groupId>
 				<artifactId>jsr305</artifactId>
 				<version>2.0.3</version>
+			</dependency>
+			<dependency>
+				<groupId>com.google.auto.service</groupId>
+				<artifactId>auto-service</artifactId>
+				<version>1.0-rc2</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
