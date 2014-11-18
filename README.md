@@ -5,7 +5,7 @@ The way the observer pattern (or for that matter, most event handling) is used i
 
 Consider
 
-(illustrate multiple updates)
+(TODO static vs dynamic dependency; cached values)
 
 ```java
 
