@@ -1,6 +1,6 @@
 package be.functional.util.functional.tuple;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 
 public class IntPair {
 
@@ -19,7 +19,7 @@ public class IntPair {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this).add("first", first).add("second", second).toString();
+		return MoreObjects.toStringHelper(this).add("first", first).add("second", second).toString();
 	}
 
 	@Override
