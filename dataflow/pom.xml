@@ -4,14 +4,16 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>be.functional</groupId>
-		<artifactId>all</artifactId>
+		<groupId>be.functional.dataflow</groupId>
+		<artifactId>dataflow-parent</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 
-	<name>Dataflow Annotation Processor</name>
-	<artifactId>be.functional.dataflow.processor</artifactId>
-	<description>A dataflow library</description>
+	<groupId>be.functional.dataflow.core</groupId>
+	<artifactId>dataflow-core</artifactId>
+    <version>1.0-SNAPSHOT</version>
+	<name>Dataflow Core</name>
+	<description>Flowing data, the core</description>
 
 	<dependencies>
 		<dependency>
