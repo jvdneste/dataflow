@@ -5,15 +5,13 @@
 
 	<parent>
 		<groupId>be.functional.dataflow</groupId>
-		<artifactId>dataflow-parent</artifactId>
+		<artifactId>be.functional.dataflow</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 
-	<groupId>be.functional.dataflow.processor</groupId>
-	<artifactId>dataflow-processor</artifactId>
-    <version>1.0-SNAPSHOT</version>
-	<name>Dataflow Processor</name>
-	<description>Flowing data, the annotation processor</description>
+	<name>be.functional.dataflow.processor</name>
+	<artifactId>be.functional.dataflow.processor</artifactId>
+	<packaging>jar</packaging>
 
 	<dependencies>
 		<dependency>
