@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import be.functional.dataflow.core.Expression;
-import be.functional.dataflow.core.IDependable;
+import be.functional.dataflow.core.IValue;
 import be.functional.dataflow.core.IProperty;
 import be.functional.dataflow.core.Property;
 import be.functional.util.event.EventImpl;
@@ -25,10 +25,10 @@ import com.google.common.collect.UnmodifiableIterator;
 
 // Currently ignoring ModelType or ModelDescription.
 
-public class Model implements Iterable<Pair<String,IDependable<?>>> {
+public class Model implements Iterable<Pair<String,IValue<?>>> {
 
-	private final Supplier<Map<String, IDependable<?>>> _cells = Suppliers.memoize(new Supplier<Map<String, IDependable<?>>>() {
-		@Override public Map<String, IDependable<?>> get() {
+	private final Supplier<Map<String, IValue<?>>> _cells = Suppliers.memoize(new Supplier<Map<String, IValue<?>>>() {
+		@Override public Map<String, IValue<?>> get() {
 			return new HashMap<>();
 		}
 	});
@@ -42,10 +42,10 @@ public class Model implements Iterable<Pair<String,IDependable<?>>> {
 	public Model() {
 	}
 
-	protected void put(final String pKey, final IDependable<?> pDependable) {
-		final Map<String, IDependable<?>> cells = _cells.get();
+	protected void put(final String pKey, final IValue<?> pDependable) {
+		final Map<String, IValue<?>> cells = _cells.get();
 		if (cells.put(pKey, pDependable) == null) {
-			_eventAdded.fire(Pair.<String,IDependable<?>>of(pKey, pDependable));
+			_eventAdded.fire(Pair.<String,IValue<?>>of(pKey, pDependable));
 		}
 	}
 
@@ -54,7 +54,7 @@ public class Model implements Iterable<Pair<String,IDependable<?>>> {
 		sideEffects.put(pKey, pSideEffect);
 	}
 
-	protected <T> IDependable<IProperty<T>> path(final String[] pPropertyNames) {
+	protected <T> IValue<IProperty<T>> path(final String[] pPropertyNames) {
 		Preconditions.checkArgument(pPropertyNames.length > 0, "Expected at least one property name.");
 		class Path extends Expression<IProperty<T>> {
 			@Override
@@ -89,7 +89,7 @@ public class Model implements Iterable<Pair<String,IDependable<?>>> {
 			return getLocalProperty(pPropertyNames[0]);
 		}
 
-		final IDependable<IProperty<T>> path = path(pPropertyNames);
+		final IValue<IProperty<T>> path = path(pPropertyNames);
 
 		class PathProperty extends Expression<T> implements IProperty<T> {
 
@@ -113,7 +113,7 @@ public class Model implements Iterable<Pair<String,IDependable<?>>> {
 	}
 
 	private <T> IProperty<T> getLocalProperty(final String pPropertyName) {
-		final Map<String, IDependable<?>> properties = _cells.get();
+		final Map<String, IValue<?>> properties = _cells.get();
 
 		@SuppressWarnings("unchecked")
 		IProperty<T> property = (IProperty<T>) properties.get(pPropertyName);
@@ -126,24 +126,24 @@ public class Model implements Iterable<Pair<String,IDependable<?>>> {
 	}
 
 	@Override
-	public Iterator<Pair<String, IDependable<?>>> iterator() {
-		return Iterators.transform(_cells.get().entrySet().iterator(), new Function<Entry<String, IDependable<?>>, Pair<String, IDependable<?>>>() {
+	public Iterator<Pair<String, IValue<?>>> iterator() {
+		return Iterators.transform(_cells.get().entrySet().iterator(), new Function<Entry<String, IValue<?>>, Pair<String, IValue<?>>>() {
 			@Override
-			public Pair<String, IDependable<?>> apply(final Entry<String, IDependable<?>> pEntry) {
-				return Pair.<String,IDependable<?>>of(pEntry.getKey(), pEntry.getValue());
+			public Pair<String, IValue<?>> apply(final Entry<String, IValue<?>> pEntry) {
+				return Pair.<String,IValue<?>>of(pEntry.getKey(), pEntry.getValue());
 			}
 		});
 	}
 
-	private final EventImpl<Pair<String, IDependable<?>>> _eventAdded = new EventImpl<>();
+	private final EventImpl<Pair<String, IValue<?>>> _eventAdded = new EventImpl<>();
 
-	public IEvent<Pair<String, IDependable<?>>> eventAdded() {
+	public IEvent<Pair<String, IValue<?>>> eventAdded() {
 		return _eventAdded;
 	}
 
-	private final EventImpl<Pair<String, IDependable<?>>> _eventRemoved = new EventImpl<>();
+	private final EventImpl<Pair<String, IValue<?>>> _eventRemoved = new EventImpl<>();
 
-	public IEvent<Pair<String, IDependable<?>>> eventRemoved() {
+	public IEvent<Pair<String, IValue<?>>> eventRemoved() {
 		return _eventRemoved;
 	}
 

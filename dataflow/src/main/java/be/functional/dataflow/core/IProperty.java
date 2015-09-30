@@ -1,6 +1,8 @@
 package be.functional.dataflow.core;
 
-public interface IProperty<T> extends IDependable<T> {
+public interface IProperty<T> {
 
-  void set(T pValue);
+	T get(IExpression<?> pDependant);
+
+	void set(T pValue);
 }

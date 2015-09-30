@@ -4,7 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import be.functional.dataflow.core.Expression;
-import be.functional.dataflow.core.IDependant;
+import be.functional.dataflow.core.IExpression;
 import be.functional.dataflow.core.Property;
 
 public class DependableTest {
@@ -20,11 +20,11 @@ public class DependableTest {
       }
     };
 
-    Assert.assertEquals(e.get(IDependant.SIDE_EFFECT), (Integer) 5);
+    Assert.assertEquals(e.get(IExpression.SIDE_EFFECT), (Integer) 5);
 
     p2.set(4);
 
-    Assert.assertEquals(e.get(IDependant.SIDE_EFFECT), (Integer) 6);
+    Assert.assertEquals(e.get(IExpression.SIDE_EFFECT), (Integer) 6);
   }
 
 }

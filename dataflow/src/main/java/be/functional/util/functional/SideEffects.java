@@ -1,14 +1,14 @@
 package be.functional.util.functional;
 
-import be.functional.dataflow.core.IDependant;
+import be.functional.dataflow.core.IExpression;
 
 public class SideEffects {
 
   private SideEffects() {
   }
 
-  public static <T> SideEffect Perform(final SideEffect1<IDependant> pSideEffect) {
-    class SideEffectOfDependant implements IDependant, SideEffect {
+  public static <T> SideEffect Perform(final SideEffect1<IExpression> pSideEffect) {
+    class SideEffectOfDependant implements IExpression, SideEffect {
       @Override
       public void invalidate() {
         apply();
