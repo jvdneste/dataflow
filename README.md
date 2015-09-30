@@ -1,4 +1,2 @@
 
-dataflow for java
-
-+ transaction support
+dataflow. rid your code of the update() method mess.
