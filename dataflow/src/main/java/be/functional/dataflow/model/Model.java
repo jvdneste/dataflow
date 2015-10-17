@@ -6,15 +6,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import be.functional.dataflow.core.Expression;
-import be.functional.dataflow.core.IValue;
-import be.functional.dataflow.core.IProperty;
-import be.functional.dataflow.core.Property;
-import be.functional.util.event.EventImpl;
-import be.functional.util.event.IEvent;
-import be.functional.util.functional.SideEffect;
-import be.functional.util.functional.tuple.Pair;
-
 import com.google.common.base.Function;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
@@ -22,6 +13,15 @@ import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.UnmodifiableIterator;
+
+import be.functional.dataflow.core.Domain;
+import be.functional.dataflow.core.IExpression;
+import be.functional.dataflow.core.IProperty;
+import be.functional.dataflow.core.IValue;
+import be.functional.util.event.EventImpl;
+import be.functional.util.event.IEvent;
+import be.functional.util.functional.SideEffect;
+import be.functional.util.functional.tuple.Pair;
 
 // Currently ignoring ModelType or ModelDescription.
 
@@ -39,7 +39,10 @@ public class Model implements Iterable<Pair<String,IValue<?>>> {
 		}
 	});
 
-	public Model() {
+	private final Domain domain;
+
+	public Model(final Domain domain) {
+		this.domain = domain;
 	}
 
 	protected void put(final String pKey, final IValue<?> pDependable) {
@@ -54,11 +57,11 @@ public class Model implements Iterable<Pair<String,IValue<?>>> {
 		sideEffects.put(pKey, pSideEffect);
 	}
 
-	protected <T> IValue<IProperty<T>> path(final String[] pPropertyNames) {
+	protected <T> IExpression<IProperty<T>> path(final String[] pPropertyNames) {
 		Preconditions.checkArgument(pPropertyNames.length > 0, "Expected at least one property name.");
-		class Path extends Expression<IProperty<T>> {
+		class Path implements Function<IExpression<?>,IProperty<T>> {
 			@Override
-			protected IProperty<T> calculate() {
+			public IProperty<T> apply(final IExpression<?> depender) {
 				final UnmodifiableIterator<String> it = Iterators.forArray(pPropertyNames);
 
 				Model model = Model.this;
@@ -68,10 +71,10 @@ public class Model implements Iterable<Pair<String,IValue<?>>> {
 						return model.getLocalProperty(next);
 					}
 					final IProperty<Model> property = model.<Model>getLocalProperty(next);
-					model = property.get(this);
+					model = property.get(depender);
 					if (model == null) {
-						property.set(new Model());
-						model = property.get(this); // the property must know that we depend on it
+						property.set(new Model(domain));
+						model = property.get(depender); // the property must know that we depend on it
 					}
 				}
 			}
@@ -80,7 +83,7 @@ public class Model implements Iterable<Pair<String,IValue<?>>> {
 				return MoreObjects.toStringHelper("Path").addValue(Arrays.toString(pPropertyNames)).toString();
 			}
 		};
-		return new Path();
+		return domain.newExpression(new Path());
 	}
 
 	public <T> IProperty<T> getProperty(final String... pPropertyNames) {
@@ -89,9 +92,16 @@ public class Model implements Iterable<Pair<String,IValue<?>>> {
 			return getLocalProperty(pPropertyNames[0]);
 		}
 
-		final IValue<IProperty<T>> path = path(pPropertyNames);
+		final IExpression<IProperty<T>> path = path(pPropertyNames);
 
-		class PathProperty extends Expression<T> implements IProperty<T> {
+		final IExpression<T> deref = domain.newExpression(new Function<IExpression<?>, T>() {
+			@Override
+			public T apply(final IExpression<?> input) {
+				return path.get(input).get(input);
+			}
+		});
+
+		class PathProperty implements IProperty<T>, IExpression<T> {
 
 			@Override
 			public void set(final T pValue) {
@@ -99,13 +109,23 @@ public class Model implements Iterable<Pair<String,IValue<?>>> {
 			}
 
 			@Override
-			protected T calculate() {
-				return path.get(this).get(this);
+			public T get(final IExpression<?> pDependant) {
+				return path.get(this).get(pDependant);
 			}
 
 			@Override
 			public String toString() {
 				return MoreObjects.toStringHelper("PathProperty").addValue(Arrays.toString(pPropertyNames)).toString();
+			}
+
+			@Override
+			public Domain getDomain() {
+				return domain;
+			}
+
+			@Override
+			public T output() {
+				return path.output().output();
 			}
 		}
 
@@ -118,7 +138,7 @@ public class Model implements Iterable<Pair<String,IValue<?>>> {
 		@SuppressWarnings("unchecked")
 		IProperty<T> property = (IProperty<T>) properties.get(pPropertyName);
 		if (property == null) {
-			property = Property.Create();
+			property = domain.newProperty(null);
 			properties.put(pPropertyName, property);
 		}
 

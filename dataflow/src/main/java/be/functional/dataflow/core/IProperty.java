@@ -1,8 +1,7 @@
 package be.functional.dataflow.core;
 
-public interface IProperty<T> {
+public interface IProperty<T> extends IValue<T> {
 
-	T get(IExpression<?> pDependant);
 
 	void set(T pValue);
 }

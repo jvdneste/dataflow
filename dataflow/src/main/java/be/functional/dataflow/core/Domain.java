@@ -33,7 +33,7 @@ public class Domain {
 	private class DomainThreadFactory implements ThreadFactory {
 		@Override
 		public Thread newThread(final Runnable r) {
-			final Thread result = domainThread = new Thread(r, "Domain thread for \"" + name + "\"");
+			final Thread result = domainThread = new Thread(r, "Domain \"" + name + "\"");
 			return result;
 		}
 	}
@@ -52,6 +52,29 @@ public class Domain {
 		return new Property<T>(value);
 	}
 
+	//	public <T> IProperty<T> newPropertyRef(final Function<IExpression<?>,IProperty<T>> fRef) {
+	//		final Function<IExpression<?>, T> fDeref = new Function<IExpression<?>,T>() {
+	//			@Override
+	//			public T apply(final IExpression<?> input) {
+	//				return fRef.apply(input).get(input);
+	//			}
+	//		};
+	//		final IExpression<IProperty<T>> ref = newExpression(fRef);
+	//		class PropertyByReference extends Expression<T> implements IProperty<T> {
+	//
+	//			public PropertyByReference() {
+	//				super(fDeref);
+	//			}
+	//
+	//			@Override
+	//			public void set(final T pValue) {
+	//
+	//			}
+	//
+	//		}
+	//		return new PropertyByReference();
+	//	}
+
 	public <T> IExpression<T> newExpression(final Function<IExpression<?>, T> f) {
 		return new Expression<T>(f);
 	}
@@ -69,7 +92,9 @@ public class Domain {
 	}
 
 	private <T> T getImpl(final Property<T> value, final IExpression<?> pDepender) {
-		value.mDependers.add(new WeakReference<IExpression<?>>(pDepender));
+		if (pDepender != null) {
+			value.mDependers.add(new WeakReference<IExpression<?>>(pDepender));
+		}
 		return value.mValue;
 	}
 
@@ -92,9 +117,13 @@ public class Domain {
 		}
 		property.mValue = value;
 		invalidate(property.mDependers);
+		property.mDependers.clear();
 	}
 
 	private <T> T get(final Expression<T> expression, final IExpression<?> pDepender) {
+		if (Thread.currentThread() == domainThread) {
+			return getImpl(expression, pDepender);
+		}
 		return invoke(new Callable<T>() {
 			@Override
 			public T call() throws Exception {
@@ -105,8 +134,11 @@ public class Domain {
 
 	private <T> T getImpl(final Expression<T> expression, final IExpression<?> pDepender) {
 		if (!expression.mIsUpToDate) {
-			expression.mValue = expression.mUpdate.apply(pDepender);
+			expression.mValue = expression.mUpdate.apply(expression);
 			expression.mIsUpToDate = true;
+		}
+		if (pDepender != null) {
+			expression.mDependers.add(new WeakReference<IExpression<?>>(pDepender));
 		}
 		return expression.mValue;
 	}
@@ -177,6 +209,11 @@ public class Domain {
 		}
 
 		@Override
+		public T output() {
+			return Domain.this.get(this, null);
+		}
+
+		@Override
 		public String toString() {
 			return MoreObjects.toStringHelper("Property").add("value", mValue).toString();
 		}
@@ -203,8 +240,18 @@ public class Domain {
 		}
 
 		@Override
+		public T output() {
+			return Domain.this.get(this, null);
+		}
+
+		@Override
 		public Domain getDomain() {
 			return Domain.this;
+		}
+
+		@Override
+		public String toString() {
+			return mUpdate.toString();
 		}
 	}
 }

@@ -1,8 +1,7 @@
 package be.functional.dataflow.core;
 
-public interface IExpression<T> {
+public interface IExpression<T> extends IValue<T> {
 
 	Domain getDomain();
 
-	T get(IExpression<?> pDependant);
 }
