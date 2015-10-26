@@ -3,40 +3,44 @@ package be.functional.dataflow.model;
 import org.junit.Assert;
 import org.junit.Test;
 
-import be.functional.dataflow.core.Expression;
-import be.functional.dataflow.core.IValue;
+import com.google.common.base.Function;
+
+import be.functional.dataflow.core.Domain;
 import be.functional.dataflow.core.IExpression;
 import be.functional.dataflow.core.IProperty;
-import be.functional.dataflow.model.Model;
+import be.functional.dataflow.core.IValue;
 
 public class ModelTest {
 
-  @Test
-  public void basicTest() {
-    final Model model = new Model();
+	@Test
+	public void basicTest() {
 
-    final IProperty<Integer> c = model.<Integer>getProperty("a", "b", "c");
-    c.set(2);
+		final Domain domain = new Domain("test");
 
-    final IProperty<Integer> d = model.<Integer>getProperty("a", "b", "d");
-    d.set(3);
+		final Model model = new Model(domain);
 
-    final IValue<Integer> e = new Expression<Integer>() {
-      @Override
-      protected Integer calculate() {
-        return c.get(this) + d.get(this);
-      }
-    };
+		final IProperty<Integer> c = model.<Integer>getProperty("a", "b", "c");
+		c.set(2);
 
-    Assert.assertEquals(e.get(IExpression.SIDE_EFFECT), (Integer) 5);
+		final IProperty<Integer> d = model.<Integer>getProperty("a", "b", "d");
+		d.set(3);
 
-    final Model bReplacement = new Model();
-    bReplacement.getProperty("c").set(7);
-    bReplacement.getProperty("d").set(9);
-    model.getProperty("a", "b").set(bReplacement);
+		final IValue<Integer> e = domain.newExpression(new Function<IExpression<?>, Integer>() {
+			@Override
+			public Integer apply(final IExpression<?> dep) {
+				return c.get(dep) + d.get(dep);
+			}
+		});
 
-    Assert.assertEquals((Integer) 7, c.get(IExpression.SIDE_EFFECT));
-    Assert.assertEquals((Integer) 9, d.get(IExpression.SIDE_EFFECT));
-    Assert.assertEquals((Integer) 16, e.get(IExpression.SIDE_EFFECT));
-  }
+		Assert.assertEquals(e.output(), (Integer) 5);
+
+		final Model bReplacement = new Model(domain);
+		bReplacement.getProperty("c").set(7);
+		bReplacement.getProperty("d").set(9);
+		model.getProperty("a", "b").set(bReplacement);
+
+		Assert.assertEquals((Integer) 7, c.output());
+		Assert.assertEquals((Integer) 9, d.output());
+		Assert.assertEquals((Integer) 16, e.output());
+	}
 }
