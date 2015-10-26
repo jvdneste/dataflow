@@ -13,7 +13,39 @@ import be.functional.dataflow.core.IValue;
 public class ModelTest {
 
 	@Test
-	public void basicTest() {
+	public void basicTest1() {
+
+		final Domain domain = new Domain("test");
+
+		final Model model = new Model(domain);
+
+		final IProperty<Integer> b = model.<Integer>getProperty("a", "b");
+		b.set(2);
+
+		final IProperty<Integer> c = model.<Integer>getProperty("a", "c");
+		c.set(3);
+
+		final IValue<Integer> sum = domain.newExpression(new Function<IExpression<?>, Integer>() {
+			@Override
+			public Integer apply(final IExpression<?> dep) {
+				return b.get(dep) + c.get(dep);
+			}
+		});
+
+		Assert.assertEquals(sum.output(), (Integer) 5);
+
+		final Model replacement = new Model(domain);
+		replacement.getProperty("b").set(7);
+		replacement.getProperty("c").set(9);
+		model.getProperty("a").set(replacement);
+
+		Assert.assertEquals((Integer) 7, b.output());
+		Assert.assertEquals((Integer) 9, c.output());
+		Assert.assertEquals((Integer) 16, sum.output());
+	}
+
+	@Test
+	public void basicTest2() {
 
 		final Domain domain = new Domain("test");
 

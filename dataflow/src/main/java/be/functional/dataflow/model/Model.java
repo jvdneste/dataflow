@@ -94,28 +94,21 @@ public class Model implements Iterable<Pair<String,IValue<?>>> {
 
 		final IExpression<IProperty<T>> path = path(pPropertyNames);
 
-		final IExpression<T> deref = domain.newExpression(new Function<IExpression<?>, T>() {
-			@Override
-			public T apply(final IExpression<?> input) {
-				return path.get(input).get(input);
-			}
-		});
-
 		class PathProperty implements IProperty<T>, IExpression<T> {
 
 			@Override
 			public void set(final T pValue) {
-				path.get(this).set(pValue);
+				path.output().set(pValue);
 			}
 
 			@Override
 			public T get(final IExpression<?> pDependant) {
-				return path.get(this).get(pDependant);
+				return path.get(pDependant).get(pDependant);
 			}
 
 			@Override
 			public String toString() {
-				return MoreObjects.toStringHelper("PathProperty").addValue(Arrays.toString(pPropertyNames)).toString();
+				return MoreObjects.toStringHelper("PathProperty").add("path", Arrays.toString(pPropertyNames)).add("expression", path).toString();
 			}
 
 			@Override

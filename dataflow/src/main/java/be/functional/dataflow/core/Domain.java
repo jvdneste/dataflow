@@ -251,7 +251,7 @@ public class Domain {
 
 		@Override
 		public String toString() {
-			return mUpdate.toString();
+			return MoreObjects.toStringHelper(Expression.class).add("isUpToDate", mIsUpToDate).add("value", mValue).toString();
 		}
 	}
 }
