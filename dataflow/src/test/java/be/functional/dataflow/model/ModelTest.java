@@ -5,7 +5,7 @@ import org.junit.Test;
 
 import com.google.common.base.Function;
 
-import be.functional.dataflow.core.Domain;
+import be.functional.dataflow.core.StmDomain;
 import be.functional.dataflow.core.IExpression;
 import be.functional.dataflow.core.IProperty;
 import be.functional.dataflow.core.IValue;
@@ -15,7 +15,7 @@ public class ModelTest {
 	@Test
 	public void basicTest1() {
 
-		final Domain domain = new Domain("test");
+		final StmDomain domain = new StmDomain("test");
 
 		final Model model = new Model(domain);
 
@@ -47,7 +47,7 @@ public class ModelTest {
 	@Test
 	public void basicTest2() {
 
-		final Domain domain = new Domain("test");
+		final StmDomain domain = new StmDomain("test");
 
 		final Model model = new Model(domain);
 

@@ -14,7 +14,7 @@ import com.google.common.base.Suppliers;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.UnmodifiableIterator;
 
-import be.functional.dataflow.core.Domain;
+import be.functional.dataflow.core.StmDomain;
 import be.functional.dataflow.core.IExpression;
 import be.functional.dataflow.core.IProperty;
 import be.functional.dataflow.core.IValue;
@@ -39,9 +39,9 @@ public class Model implements Iterable<Pair<String,IValue<?>>> {
 		}
 	});
 
-	private final Domain domain;
+	private final StmDomain domain;
 
-	public Model(final Domain domain) {
+	public Model(final StmDomain domain) {
 		this.domain = domain;
 	}
 
@@ -112,7 +112,7 @@ public class Model implements Iterable<Pair<String,IValue<?>>> {
 			}
 
 			@Override
-			public Domain getDomain() {
+			public StmDomain getDomain() {
 				return domain;
 			}
 

@@ -9,7 +9,7 @@ public class DependableTest {
 
 	@Test
 	public void test1() {
-		final Domain domain = new Domain("test");
+		final StmDomain domain = new StmDomain("test");
 		final IProperty<Integer> p1 = domain.newProperty(2);
 		final IProperty<Integer> p2 = domain.newProperty(2);
 		final IExpression<Integer> e = domain.newExpression(new Function<IExpression<?>, Integer>() {
@@ -28,7 +28,7 @@ public class DependableTest {
 
 	@Test
 	public void test2() {
-		final Domain domain = new Domain("test");
+		final StmDomain domain = new StmDomain("test");
 		final IProperty<Integer> p1 = domain.newProperty(2);
 		final IProperty<Integer> p2 = domain.newProperty(2);
 		final IExpression<Integer> e1 = domain.newExpression(new Function<IExpression<?>, Integer>() {
@@ -60,7 +60,7 @@ public class DependableTest {
 
 	@Test
 	public void test3() {
-		final Domain domain = new Domain("test");
+		final StmDomain domain = new StmDomain("test");
 		final IProperty<Integer> p1 = domain.newProperty(2);
 		final IProperty<Integer> p2 = domain.newProperty(2);
 		final IExpression<Integer> e1 = domain.newExpression(new Function<IExpression<?>, Integer>() {

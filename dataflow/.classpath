@@ -3,9 +3,9 @@
 	<classpathentry including="**/*.java" kind="src" output="target/test-classes" path="src/test/java"/>
 	<classpathentry including="**/*.java" kind="src" path="src/main/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
-	<classpathentry kind="var" path="M2_REPO/com/typesafe/akka/akka-actor_2.10/2.3.14/akka-actor_2.10-2.3.14.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/scala-lang/scala-library/2.10.4/scala-library-2.10.4.jar"/>
-	<classpathentry kind="var" path="M2_REPO/com/typesafe/config/1.2.1/config-1.2.1.jar"/>
+	<classpathentry kind="var" path="M2_REPO/com/github/krukow/clj-ds/0.0.4/clj-ds-0.0.4.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/scala-stm/scala-stm_2.11/0.7/scala-stm_2.11-0.7.jar" sourcepath="M2_REPO/org/scala-stm/scala-stm_2.11/0.7/scala-stm_2.11-0.7-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/scala-lang/scala-library/2.11.0/scala-library-2.11.0.jar" sourcepath="M2_REPO/org/scala-lang/scala-library/2.11.0/scala-library-2.11.0-sources.jar"/>
 	<classpathentry kind="var" path="M2_REPO/com/google/guava/guava/18.0/guava-18.0.jar" sourcepath="M2_REPO/com/google/guava/guava/18.0/guava-18.0-sources.jar"/>
 	<classpathentry kind="var" path="M2_REPO/commons-beanutils/commons-beanutils/1.9.1/commons-beanutils-1.9.1.jar" sourcepath="M2_REPO/commons-beanutils/commons-beanutils/1.9.1/commons-beanutils-1.9.1-sources.jar"/>
 	<classpathentry kind="var" path="M2_REPO/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.jar" sourcepath="M2_REPO/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1-sources.jar"/>
