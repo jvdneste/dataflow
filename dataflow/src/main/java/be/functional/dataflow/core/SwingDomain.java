@@ -1,23 +1,13 @@
 package be.functional.dataflow.core;
 
 import java.lang.ref.WeakReference;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.Queue;
 
-import javax.annotation.Nullable;
-import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.text.JTextComponent;
 
-import com.google.common.base.Function;
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Multimap;
+import com.google.common.base.Objects;
 
 /** only hosts side effects */
 public class SwingDomain implements IDomain {
@@ -33,24 +23,45 @@ public class SwingDomain implements IDomain {
 		return name;
 	}
 
-	private abstract class SideEffect implements IDependent {
+	public abstract class SideEffect implements IDependent, Runnable {
 
 		@Override
 		public IDomain getDomain() {
 			return SwingDomain.this;
 		}
-
-		public abstract void apply();
 	}
 
-	public void bindTextField(final JTextField textField, final IProperty<String> value) {
+	private static void perform(final Runnable effect) {
+		if (SwingUtilities.isEventDispatchThread()) {
+			effect.run();
+		} else {
+			SwingUtilities.invokeLater(effect);
+		}
+	}
+
+	public SideEffect bindTextField(final JTextComponent textComponent, final IProperty<String> property) {
+		class TextFieldUpdater extends SideEffect {
+			@Override
+			public void run() {
+				final String value = property.get(this);
+				if (!Objects.equal(value, textComponent.getText())) {
+					textComponent.setText(value);
+				}
+			}
+		}
+
+		final TextFieldUpdater updater = new TextFieldUpdater();
+		perform(updater);
+
 		class Adapter implements DocumentListener {
 			@Override
 			public void removeUpdate(final DocumentEvent e) {
+				property.set(textComponent.getText());
 			}
 
 			@Override
 			public void insertUpdate(final DocumentEvent e) {
+				property.set(textComponent.getText());
 			}
 
 			@Override
@@ -58,64 +69,74 @@ public class SwingDomain implements IDomain {
 			}
 		};
 		final Adapter listener = new Adapter();
-		textField.getDocument().addDocumentListener(listener);
+		textComponent.getDocument().addDocumentListener(listener);
+
+		return updater;
 	}
 
-	public void bindComponent()(final IBean pBean, final String pPropertyName, final IProperty<String> pProperty) {
-
-		final IDependent dependent = new SideEffect() {
-			@Override
-			public void apply() {
-
-			};
-		};
-
-		final String value = pProperty.get(dependent);
-
-		class TextFieldBinding implements SideEffect1<IDependant>, PropertyChangeListener {
-
-			private volatile boolean _updating = false;
-
-			@Override
-			public void apply(final IDependant pDependant) {
-				if (_updating) {
-					return;
-				}
-				_updating = true;
-				SwingUtilities.invokeLater(new Runnable() {
-					@Override
-					public void run() {
-						final String value = pPropertyByPath.get(pDependant);
-						logger.debug(MessageFormat.format("updating component property. '{0}' -> '{1}'", pPropertyName, value));
-						Beans.setProperty(pBean, pPropertyName, value);
-						_updating = false;
-					}
-				});
-			}
-
-			@Override
-			public void propertyChange(final PropertyChangeEvent evt) {
-				if (_updating) {
-					return;
-				}
-				_updating = true;
-				final String value = (String) Beans.getProperty(pBean, pPropertyName);
-				logger.debug(MessageFormat.format("updating dependable property. '{0}' -> '{1}'", pPropertyName, value));
-				pPropertyByPath.set(value);
-				_updating = false;
-			}
-		}
-		final TextFieldBinding binding = new TextFieldBinding();
-		pBean.addPropertyChangeListener(pPropertyName, binding);
-		return SideEffects.Perform(binding);
-	}
+	//	public void bindComponent()(final IBean pBean, final String pPropertyName, final IProperty<String> pProperty) {
+	//
+	//		final IDependent dependent = new SideEffect() {
+	//			@Override
+	//			public void apply() {
+	//
+	//			};
+	//		};
+	//
+	//		final String value = pProperty.get(dependent);
+	//
+	//		class TextFieldBinding implements SideEffect1<IDependent>, PropertyChangeListener {
+	//
+	//			private volatile boolean _updating = false;
+	//
+	//			@Override
+	//			public void apply(final IDependent pDependant) {
+	//				if (_updating) {
+	//					return;
+	//				}
+	//				_updating = true;
+	//				SwingUtilities.invokeLater(new Runnable() {
+	//					@Override
+	//					public void run() {
+	//						final String value = pPropertyByPath.get(pDependant);
+	//						logger.debug(MessageFormat.format("updating component property. '{0}' -> '{1}'", pPropertyName, value));
+	//						Beans.setProperty(pBean, pPropertyName, value);
+	//						_updating = false;
+	//					}
+	//				});
+	//			}
+	//
+	//			@Override
+	//			public void propertyChange(final PropertyChangeEvent evt) {
+	//				if (_updating) {
+	//					return;
+	//				}
+	//				_updating = true;
+	//				final String value = (String) Beans.getProperty(pBean, pPropertyName);
+	//				logger.debug(MessageFormat.format("updating dependable property. '{0}' -> '{1}'", pPropertyName, value));
+	//				pPropertyByPath.set(value);
+	//				_updating = false;
+	//			}
+	//		}
+	//		final TextFieldBinding binding = new TextFieldBinding();
+	//		pBean.addPropertyChangeListener(pPropertyName, binding);
+	//		return SideEffects.Perform(binding);
+	//	}
 
 	// away with expression, just define 'bindings' of 'side effects', or something like that.
 
 	@Override
 	public void signal(final Iterable<WeakReference<IDependent>> dependers) {
-		if (SwingUtilities.isEventDispatchThread()) {
-		} else {
-		}
+		perform(new Runnable() {
+			@Override
+			public void run() {
+				for (final WeakReference<IDependent> ref : dependers) {
+					final IDependent dependent = ref.get();
+					if (dependent != null) {
+						((SideEffect)dependent).run();
+					}
+				}
+			}
+		});
 	}
 }

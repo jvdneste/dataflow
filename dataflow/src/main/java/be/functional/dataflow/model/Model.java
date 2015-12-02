@@ -14,10 +14,11 @@ import com.google.common.base.Suppliers;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.UnmodifiableIterator;
 
-import be.functional.dataflow.core.StmDomain;
+import be.functional.dataflow.core.IDependent;
 import be.functional.dataflow.core.IExpression;
 import be.functional.dataflow.core.IProperty;
 import be.functional.dataflow.core.IValue;
+import be.functional.dataflow.core.StmDomain;
 import be.functional.util.event.EventImpl;
 import be.functional.util.event.IEvent;
 import be.functional.util.functional.SideEffect;
@@ -59,9 +60,9 @@ public class Model implements Iterable<Pair<String,IValue<?>>> {
 
 	protected <T> IExpression<IProperty<T>> path(final String[] pPropertyNames) {
 		Preconditions.checkArgument(pPropertyNames.length > 0, "Expected at least one property name.");
-		class Path implements Function<IExpression<?>,IProperty<T>> {
+		class Path implements Function<IDependent,IProperty<T>> {
 			@Override
-			public IProperty<T> apply(final IExpression<?> depender) {
+			public IProperty<T> apply(final IDependent depender) {
 				final UnmodifiableIterator<String> it = Iterators.forArray(pPropertyNames);
 
 				Model model = Model.this;
@@ -102,7 +103,7 @@ public class Model implements Iterable<Pair<String,IValue<?>>> {
 			}
 
 			@Override
-			public T get(final IExpression<?> pDependant) {
+			public T get(final IDependent pDependant) {
 				return path.get(pDependant).get(pDependant);
 			}
 

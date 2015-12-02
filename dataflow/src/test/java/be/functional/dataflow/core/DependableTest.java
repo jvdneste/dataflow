@@ -12,9 +12,9 @@ public class DependableTest {
 		final StmDomain domain = new StmDomain("test");
 		final IProperty<Integer> p1 = domain.newProperty(2);
 		final IProperty<Integer> p2 = domain.newProperty(2);
-		final IExpression<Integer> e = domain.newExpression(new Function<IExpression<?>, Integer>() {
+		final IExpression<Integer> e = domain.newExpression(new Function<IDependent, Integer>() {
 			@Override
-			public Integer apply(final IExpression<?> dep) {
+			public Integer apply(final IDependent dep) {
 				return p1.get(dep) + p2.get(dep);
 			}
 		});
@@ -31,17 +31,17 @@ public class DependableTest {
 		final StmDomain domain = new StmDomain("test");
 		final IProperty<Integer> p1 = domain.newProperty(2);
 		final IProperty<Integer> p2 = domain.newProperty(2);
-		final IExpression<Integer> e1 = domain.newExpression(new Function<IExpression<?>, Integer>() {
+		final IExpression<Integer> e1 = domain.newExpression(new Function<IDependent, Integer>() {
 			@Override
-			public Integer apply(final IExpression<?> dep) {
+			public Integer apply(final IDependent dep) {
 				return p1.get(dep) + p2.get(dep);
 			}
 		});
 
 		final IProperty<Integer> p3 = domain.newProperty(2);
-		final IExpression<Integer> e2 = domain.newExpression(new Function<IExpression<?>, Integer>() {
+		final IExpression<Integer> e2 = domain.newExpression(new Function<IDependent, Integer>() {
 			@Override
-			public Integer apply(final IExpression<?> dep) {
+			public Integer apply(final IDependent dep) {
 				return e1.get(dep) + p3.get(dep);
 			}
 		});
@@ -63,24 +63,24 @@ public class DependableTest {
 		final StmDomain domain = new StmDomain("test");
 		final IProperty<Integer> p1 = domain.newProperty(2);
 		final IProperty<Integer> p2 = domain.newProperty(2);
-		final IExpression<Integer> e1 = domain.newExpression(new Function<IExpression<?>, Integer>() {
+		final IExpression<Integer> e1 = domain.newExpression(new Function<IDependent, Integer>() {
 			@Override
-			public Integer apply(final IExpression<?> dep) {
+			public Integer apply(final IDependent dep) {
 				return p1.get(dep) + p2.get(dep);
 			}
 		});
 
 		final IProperty<Integer> p3 = domain.newProperty(2);
-		final IExpression<Integer> e2 = domain.newExpression(new Function<IExpression<?>, Integer>() {
+		final IExpression<Integer> e2 = domain.newExpression(new Function<IDependent, Integer>() {
 			@Override
-			public Integer apply(final IExpression<?> dep) {
+			public Integer apply(final IDependent dep) {
 				return e1.get(dep) + p3.get(dep);
 			}
 		});
 
-		final IExpression<Integer> e3 = domain.newExpression(new Function<IExpression<?>, Integer>() {
+		final IExpression<Integer> e3 = domain.newExpression(new Function<IDependent, Integer>() {
 			@Override
-			public Integer apply(final IExpression<?> dep) {
+			public Integer apply(final IDependent dep) {
 				return e2.get(dep) + e1.get(dep);
 			}
 		});
