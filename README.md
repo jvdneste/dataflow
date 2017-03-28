@@ -11,4 +11,4 @@ It's a concept thing, a work in progress. It still needs thinking. It's not quit
 
 As out-of-fashion non-web ui frameworks are these days, I still toy with the idea of building a ui framework on top of this.
 
-I have also thought of writing an annotation processor and annotations to generate code that would reduce some plumbing. Moving into DSL-cuontry. Ultimately, you'd really want the concept to be baked into a mainstream language though.
+I have also thought of writing an annotation processor and annotations to generate code that would reduce some plumbing. Moving into DSL-country. Ultimately, you'd really want the concept to be baked into a mainstream language though.
