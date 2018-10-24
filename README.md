@@ -1,4 +1,6 @@
 
+(development continued on gitlab. the state of this code is more concept than anything else.)
+
 It's an experiment that I started playing with in different forms long before reactive was a thing and that now could be described as a pull-based reactive framework.
 
 The style of this one is different. Value and expression dependencies are automatic (you do not need to worry about managing them) and dynamic (meaning the dependency graphs change continuously at runtime). Cyclic dependencies will fail, and the framework does nothing to help you with that.
